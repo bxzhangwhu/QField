@@ -26,6 +26,13 @@ Controls.Pane {
   focus: visible
   clip: true
 
+  onFocusChanged: {
+      if( !focus ){
+          modeswitch2.visible = false
+          modeswitch3.visible = false
+      }
+  }
+
   Keys.onReleased: {
     console.warn( "KEY PRESS " + event.key )
     if ( event.key === Qt.Key_Back ||
@@ -106,6 +113,7 @@ Controls.Pane {
           onClicked: showMenu()
         }
 
+        /*
          Controls.Switch {
           id: modeswitch
           height: 56 * dp
@@ -157,26 +165,177 @@ Controls.Pane {
             }
           }
         }
+        */
 
-         Controls.ToolButton {
-           height: 56 * dp
-           width: 56 * dp
+       Controls.ToolButton {
+         id: modeswitch
+         width: 36 * dp
+         height: 36 * dp
 
-           contentItem: Rectangle {
-             anchors.fill: parent
-             color: "hotpink"
-             Image {
-               anchors.fill: parent
-               fillMode: Image.Pad
-               horizontalAlignment: Image.AlignHCenter
-               verticalAlignment: Image.AlignVCenter
-               source: Style.getThemeIcon( 'ic_settings_white_24dp' )
-             }
+         anchors.verticalCenter: parent.verticalCenter
+
+         Rectangle {
+           width: 36 * dp
+           height: 36 * dp
+           radius: 4 * dp
+
+           color:  "#80CC28"
+           border.color: "white"
+           Image {
+             height: parent.height
+             width: parent.height
+             anchors.horizontalCenter: parent.horizontalCenter
+             anchors.verticalCenter: parent.verticalCenter
+             source:  stateMachine.state === 'browse' ?  Style.getThemeIcon( 'ic_map_white_24dp' ) : stateMachine.state === 'digitize' ? Style.getThemeIcon( 'ic_create_white_24dp' ) : Style.getThemeIcon( 'ic_ruler_white_24dp' )
            }
-
-           onClicked: changeMode( "measure" )
          }
+         onClicked: {
+           if( stateMachine.state === 'browse' )
+             changeMode( "digitize" )
+           else if( stateMachine.state === 'digitize' )
+             changeMode( "measure" )
+           else
+             changeMode( "browse" )
+           modeswitch2.visible = false
+           modeswitch3.visible = false
+         }
+         onPressAndHold: {
+             modeswitch2.visible = true
+             modeswitch3.visible = true
+         }
+       }
 
+       /*
+       Controls.Switch {
+        id: modeswitchMenu
+        height: 36 * dp
+        width: 36 * 2 * dp
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: modeswitch.right
+
+        visible: false
+
+         indicator: Rectangle {
+          implicitHeight: 36 * dp
+          implicitWidth: 36 * 2 * dp
+          x: modeswitch.leftPadding
+          radius: 4 * dp
+          color:  "#80CC28"
+          border.color: "white"
+          anchors.verticalCenter: parent.verticalCenter
+           Image {
+            height: parent.height
+            width: parent.width / 2
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            source: Style.getThemeIcon( 'ic_map_white_48dp' )
+          }
+           Image {
+            height: parent.height
+            width: parent.width / 2
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            source: Style.getThemeIcon( 'ic_create_white_24dp' )
+          }
+           Rectangle {
+            x: modeswitch.checked ? parent.width - width : 0
+            width: 36 * dp
+            height: 36 * dp
+            radius: 4 * dp
+            color:  "#64B5F6"
+            border.color: "white"
+            Image {
+              height: parent.height
+              width: parent.height
+              anchors.right:  modeswitch.checked ? parent.right : undefined
+              anchors.left:  modeswitch.checked ? undefined : parent.left
+              anchors.verticalCenter: parent.verticalCenter
+              source:  modeswitch.checked ? Style.getThemeIcon( 'ic_create_white_24dp' ) : Style.getThemeIcon( 'ic_map_white_24dp' )
+            }
+          }
+        }
+        onPositionChanged: {
+          if ( checked ) {
+            changeMode( "digitize" )
+          } else {
+            changeMode( "browse" )
+          }
+          modeswitchMenu.visible = false
+        }
+      }
+      */
+       Controls.ToolButton {
+         id: modeswitch2
+         width: 36 * dp
+         height: 36 * dp
+
+         anchors.verticalCenter: parent.verticalCenter
+         visible: false
+         //anchors.left: modeswitch.right
+
+         Rectangle {
+           width: 36 * dp
+           height: 36 * dp
+           radius: 4 * dp
+
+           color:  "#80CC28"
+           border.color: "white"
+           Image {
+             height: parent.height
+             width: parent.height
+             anchors.horizontalCenter: parent.horizontalCenter
+             anchors.verticalCenter: parent.verticalCenter
+             source:  stateMachine.state === 'browse' ?  Style.getThemeIcon( 'ic_create_white_24dp' ) : stateMachine.state === 'digitize' ? Style.getThemeIcon( 'ic_ruler_white_24dp' ) : Style.getThemeIcon( 'ic_map_white_24dp' )
+           }
+         }
+         onClicked: {
+           if( stateMachine.state === 'browse' )
+             changeMode( "digitize" )
+           else if( stateMachine.state === 'digitize' )
+             changeMode( "measure" )
+           else
+             changeMode( "browse" )
+
+           modeswitch2.visible = false
+           modeswitch3.visible = false
+         }
+       }
+       Controls.ToolButton {
+         id: modeswitch3
+         width: 36 * dp
+         height: 36 * dp
+
+         anchors.verticalCenter: parent.verticalCenter
+         visible: false
+         //anchors.left: modeswitch2.right
+
+         Rectangle {
+           width: 36 * dp
+           height: 36 * dp
+           radius: 4 * dp
+
+           color:  "#80CC28"
+           border.color: "white"
+           Image {
+             height: parent.height
+             width: parent.height
+             anchors.horizontalCenter: parent.horizontalCenter
+             anchors.verticalCenter: parent.verticalCenter
+             source:  stateMachine.state === 'browse' ?  Style.getThemeIcon( 'ic_ruler_white_24dp' ) : stateMachine.state === 'digitize' ? Style.getThemeIcon( 'ic_map_white_24dp' ) : Style.getThemeIcon( 'ic_create_white_24dp' )
+           }
+         }
+         onClicked: {
+           if( stateMachine.state === 'browse' )
+             changeMode( "measure" )
+           else if( stateMachine.state === 'digitize' )
+             changeMode( "browse" )
+           else
+             changeMode( "digitize" )
+
+           modeswitch2.visible = false
+           modeswitch3.visible = false
+         }
+       }
       }
     }
 
