@@ -128,8 +128,8 @@ Rectangle{
 
             onClicked: {
                 embeddedFeatureForm.state = !readOnly ? 'Edit' : 'ReadOnly'
-                embeddedFeatureForm.relatedFeature = model.referencingFeature //nm not yet activated: associatedRelationId === '' ? model.referencingFeature : model.associatedReferencedFeature
-                embeddedFeatureForm.relatedLayer = relationEditorModel.relation.referencingLayer //nm not yet activated: associatedRelationId === '' ? relationEditorModel.relation.referencingLayer : relationEditorModel.associatedRelation.referencedLayer
+                embeddedFeatureForm.relatedFeature = associatedRelationId === '' ? model.referencingFeature : model.associatedReferencedFeature
+                embeddedFeatureForm.relatedLayer = associatedRelationId === '' ? relationEditorModel.relation.referencingLayer : relationEditorModel.associatedRelation.referencedLayer
                 embeddedFeatureForm.active = true
             }
           }
