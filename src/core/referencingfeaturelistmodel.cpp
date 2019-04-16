@@ -28,6 +28,7 @@ QHash<int, QByteArray> ReferencingFeatureListModel::roleNames() const
   roles[DisplayString] = "displayString";
   roles[ReferencingFeature] = "referencingFeature";
   roles[AssociatedReferencedFeature] = "associatedReferencedFeature";
+  roles[AssociatedDisplayString] = "associatedDisplayString";
 
   return roles;
 }
@@ -67,6 +68,8 @@ QVariant ReferencingFeatureListModel::data( const QModelIndex &index, int role )
     return mRelation.referencingLayer()->getFeature( mEntries.value( index.row() ).referencingFeatureId );
   if ( role == AssociatedReferencedFeature )
     return mAssociatedRelation.getReferencedFeature( mRelation.referencingLayer()->getFeature( mEntries.value( index.row() ).referencingFeatureId ) );
+  if ( role == AssociatedDisplayString )
+    return associatedDisplayString( mEntries.value( index.row() ).referencingFeatureId );
   return QVariant();
 }
 
@@ -163,4 +166,13 @@ bool ReferencingFeatureListModel::checkParentPrimaries()
       return false;
   }
   return true;
+}
+
+QString ReferencingFeatureListModel::associatedDisplayString( QgsFeatureId referencingFeatureId ) const
+{
+  QgsExpressionContext context = mAssociatedRelation.referencedLayer()->createExpressionContext();
+  QgsExpression expression( mAssociatedRelation.referencedLayer()->displayExpression() );
+
+  context.setFeature( mAssociatedRelation.getReferencedFeature( mRelation.referencingLayer()->getFeature( referencingFeatureId ) ) );
+  return expression.evaluate( &context ).toString();
 }

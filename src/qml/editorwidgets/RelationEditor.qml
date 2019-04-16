@@ -120,7 +120,7 @@ Rectangle{
             anchors { leftMargin: 10 * dp ; left: parent.left; right: deleteButton.left; verticalCenter: parent.verticalCenter }
             font.bold: true
             color: readOnly ? 'grey' : 'black'
-            text: { text: model.displayString }
+            text: { text: model.displayString + ' ' + model.associatedDisplayString }
           }
 
           MouseArea {
